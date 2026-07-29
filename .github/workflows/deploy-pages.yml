@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -37,6 +37,13 @@ jobs:
           gh api "repos/${GITHUB_REPOSITORY}/pages" \
             --jq '{build_type, cname, html_url, https_certificate, pending_domain_unverified_at, protected_domain_state, status}' \
             > pages-status.json
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git switch --orphan pages-diagnostics
+          git add pages-status.json
+          git commit -m "Export Pages status"
+          git push --force origin HEAD:pages-diagnostics
+          git switch --detach "$GITHUB_SHA"
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
