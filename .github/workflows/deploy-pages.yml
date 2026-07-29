@@ -25,14 +25,6 @@ jobs:
       - name: Check out site
         uses: actions/checkout@v4
 
-      - name: Register custom domain
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
-            -f cname=askfacet.com \
-            -f build_type=workflow
-
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
